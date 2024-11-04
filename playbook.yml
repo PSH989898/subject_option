@@ -4,7 +4,7 @@
   tasks:
     - name: Load Docker credentials from .env file
       shell: |
-        export $(cat /root/login.env | xargs)
+        export $(cat /home/user1/login.env | xargs)
       register: docker_env
 
     - name: Log in to Docker Hub
