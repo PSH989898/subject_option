@@ -4,7 +4,7 @@
   tasks:
     - name: Load Docker credentials from .env file
       ansible.builtin.set_fact:
-        docker_env: "{{ lookup('file', '/home/user1/login.env') | from_yaml }}"
+        docker_env: "{{ lookup('file', '/root/login.env') | from_yaml }}"
 
     - name: Log in to Docker Hub
       community.docker.docker_login:
