@@ -8,7 +8,7 @@ pipeline {
       }
       steps {
         sh '''
-        ansible-playbook -i /etc/ansible/hosts /var/lib/jenkins/workspace/ansible/playbook.yml
+        ansible-playbook -i /etc/ansible/hosts /var/lib/jenkins/workspace/subject_jenkins/playbook.yml
         '''
       }
     }
