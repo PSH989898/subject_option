@@ -1,0 +1,14 @@
+name: Notify Jenkins on Push
+
+on:
+  push:
+    branches:
+      - main  # 또는 사용할 브랜치 이름
+
+jobs:
+  notify-jenkins:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send payload to Jenkins
+        run: |
+          curl -X POST https://b327-218-146-17-197.ngrok-free.app/github-webhook/
