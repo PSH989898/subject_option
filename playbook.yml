@@ -3,26 +3,31 @@
   hosts: master
   tasks:
     - name: Load Docker credentials from .env file
-      shell: |
-        export $(cat /home/user1/login.env | xargs)
-      register: docker_env
+      ansible.builtin.set_fact:
+        docker_env: "{{ lookup('file', '/home/user1/login.env') | from_yaml }}"
 
     - name: Log in to Docker Hub
-      command: docker login -u {{ lookup('env', 'DOCKER_USERNAME') }} -p {{ lookup('env', 'DOCKER_PASSWORD') }}
+      community.docker.docker_login:
+        username: "{{ docker_env.DOCKER_USERNAME }}"
+        password: "{{ docker_env.DOCKER_PASSWORD }}"
       no_log: true
 
     - name: Build Docker image
-      command: docker build -t pshhhhh98/subject:jenkin .
+      ansible.builtin.command:
+        cmd: docker build -t pshhhhh98/subject:jenkin .
       args:
-        chdir: /root/jen  # 마스터 노드의 Dockerfile이 위치한 디렉토리
+        chdir: /root/jen  # Dockerfile이 위치한 디렉토리
 
     - name: Push Docker image to Docker Hub
-      command: docker push pshhhhh98/subject:jenkin
+      ansible.builtin.command:
+        cmd: docker push pshhhhh98/subject:jenkin
 
     - name: Deploy to Kubernetes
-      command: kubectl create deploy web-puple --replicas=3 --port=80 --image=pshhhhh98/subject:jenkin
+      ansible.builtin.command:
+        cmd: kubectl create deploy web-puple --replicas=3 --port=80 --image=pshhhhh98/subject:jenkin
       ignore_errors: yes  # 배포가 이미 존재하는 경우 오류 무시
 
     - name: Expose Service on Kubernetes
-      command: kubectl expose deploy web-puple --type=LoadBalancer --port=80 --target-port=80 --name=web-puple-svc
+      ansible.builtin.command:
+        cmd: kubectl expose deploy web-puple --type=LoadBalancer --port=80 --target-port=80 --name=web-puple-svc
       ignore_errors: yes  # 서비스가 이미 존재하는 경우 오류 무시
