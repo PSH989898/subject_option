@@ -4,7 +4,7 @@
   tasks:
     - name: Load Docker credentials from .env file
       shell: |
-        export $(grep -v '^#' /home/user1/login.env | xargs)
+        export $(grep -v '^#' /root/login.env | xargs)
       register: docker_env
       changed_when: false
 
