@@ -3,6 +3,8 @@ pipeline {
   environment {
     ANSIBLE_HOST_KEY_CHECKING = 'False'
     ANSIBLE_PRIVATE_KEY_FILE = '/var/lib/jenkins/.ssh/ansible_key'
+    DOCKER_USERNAME = credentials('docker-username') // Jenkins에 등록된 Docker 사용자 이름
+    DOCKER_PASSWORD = credentials('docker-password') // Jenkins에 등록된 Docker 비밀번호
   }
   stages {
     stage('Checkout') {
