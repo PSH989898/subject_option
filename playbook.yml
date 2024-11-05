@@ -5,7 +5,7 @@
     - name: Copy Ansible Playbook to Master
       copy:
         src: /root/jen/playbook.yml  # Jenkins에서 복사한 후의 경로
-        dest: /root/jen/playbook.yml
+        dest: /var/lib/jenkins/workspace/subject_jenkins/playbook.yml #젠킨스의 경로?
   
     - name: Log in to Docker Hub #이부분은 나중에 env로 해줘야함
       command: docker login -u pshhhhh98 -p a1a2a3a4@@
