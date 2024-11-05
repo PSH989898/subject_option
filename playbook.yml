@@ -2,25 +2,25 @@
 - name: Build and Push Docker image on Master
   hosts: master
   tasks:
-    - name: Copy Ansible Playbook to Master
-      copy:
-        src: /root/jen/playbook.yml  # Jenkins에서 복사한 후의 경로
-        dest: /root/jen/playbook.yml
+    - name: Load environment variables from .env file
+      shell: |
+        set -o allexport; source /root/login.env; set +o allexport
+      register: env_vars
 
     - name: Log in to Docker Hub
       command: docker login -u {{ lookup('env', 'DOCKER_USERNAME') }} -p {{ lookup('env', 'DOCKER_PASSWORD') }}
       no_log: true
 
     - name: Build Docker image
-      command: docker build -t {{ lookup('env', 'DOCKER_USERNAME') }}/keduitlab:yellow .
+      command: docker build -t pshhhhh98/keduitlab:yellow .
       args:
         chdir: /root/jen  # 마스터 노드의 Dockerfile이 위치한 디렉토리
 
     - name: Push Docker image to Docker Hub
-      command: docker push {{ lookup('env', 'DOCKER_USERNAME') }}/keduitlab:yellow
+      command: docker push pshhhhh98/keduitlab:yellow
 
     - name: Deploy to Kubernetes
-      command: kubectl create deploy web-puple --replicas=3 --port=80 --image={{ lookup('env', 'DOCKER_USERNAME') }}/keduitlab:yellow
+      command: kubectl create deploy web-puple --replicas=3 --port=80 --image=pshhhhh98/keduitlab:yellow
       ignore_errors: yes  # 배포가 이미 존재하는 경우 오류 무시
 
     - name: Expose Service on Kubernetes
