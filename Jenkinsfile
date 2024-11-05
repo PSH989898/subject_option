@@ -14,7 +14,7 @@ pipeline {
                 ansible -i /etc/ansible/hosts \
                 -u your_user_name \
                 --private-key /var/lib/jenkins/.ssh/ansible_key \
-                copy src=/var/lib/jenkins/workspace/subject_jenkins/playbook.yml dest=/root/jen/playbook.yml
+                master -m copy -a "src=${WORKSPACE}/playbook.yml dest=/root/jen/playbook.yml"
                 '''
             }
         }
