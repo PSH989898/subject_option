@@ -1,48 +1,33 @@
 pipeline {
-    agent any  // 모든 에이전트에서 실행
-    environment {
-        ANSIBLE_HOST_KEY_CHECKING = 'False'
-        ANSIBLE_PRIVATE_KEY_FILE = '/var/lib/jenkins/.ssh/ansible_key'
-        DOCKER_USERNAME = credentials('docker-username') // Jenkins에 등록된 Docker 사용자 이름
-        DOCKER_PASSWORD = credentials('docker-password') // Jenkins에 등록된 Docker 비밀번호
-    }
+    agent any
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                checkout scm
+                // GitHub 또는 GitLab에서 코드 체크아웃
+                git url: 'https://github.com/your-repo/your-project.git', branch: 'main' // 자신의 리포지토리와 브랜치로 변경
             }
         }
-        stage('Build and Push Docker Image') {
+        stage('Copy Ansible Playbook to Master') {
             steps {
-                script {
-                    // Docker 이미지를 빌드하고 Docker Hub에 푸시
-                    sh '''
-                        docker build -t pshhhhh98/subject:jenkin .
-                        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-                        docker push pshhhhh98/subject:jenkin
-                    '''
-                }
+                // Ansible을 사용하여 마스터 노드에 플레이북 복사
+                sh '''
+                ansible-copy -i /etc/ansible/hosts \
+                -u your_user_name \
+                --private-key /var/lib/jenkins/.ssh/ansible_key \
+                /path/to/your/playbook.yml master:/root/jen/playbook.yml
+                '''
             }
         }
         stage('Deploy Docker Image on Master') {
+            environment {
+                ANSIBLE_HOST_KEY_CHECKING = 'False'
+                ANSIBLE_PRIVATE_KEY_FILE = '/var/lib/jenkins/.ssh/ansible_key'
+            }
             steps {
-                script {
-                    sh '''
-                        ansible-playbook -i /etc/ansible/hosts /var/lib/jenkins/workspace/subject_jenkins/playbook.yml
-                    '''
-                }
+                sh '''
+                ansible-playbook -i /etc/ansible/hosts master:/root/jen/playbook.yml
+                '''
             }
-        }
-    }
-    post {
-        always {
-            script {
-                cleanWs() // 이곳을 node 블록으로 감쌉니다.
-            }
-            echo '배포 완료!'
-        }
-        failure {
-            echo '배포 실패!'
         }
     }
 }
