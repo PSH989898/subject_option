@@ -4,11 +4,12 @@
   tasks:
     - name: Load Docker credentials from .env file
       shell: |
-        export $(sudo cat /home/user1/login.env | xargs)
-      register: docker_env
+        set -a
+        source /home/user1/login.env
+        set +a
 
     - name: Log in to Docker Hub
-      command: docker login -u {{ lookup('env', 'DOCKER_USERNAME') }} -p {{ lookup('env', 'DOCKER_PASSWORD') }}
+      command: docker login -u "{{ lookup('env', 'DOCKER_USERNAME') }}" -p "{{ lookup('env', 'DOCKER_PASSWORD') }}"
       no_log: true
 
     - name: Build Docker image
