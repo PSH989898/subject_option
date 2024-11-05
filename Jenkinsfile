@@ -1,5 +1,5 @@
 pipeline {
-  agent any
+  agent any  // 모든 에이전트에서 실행
   environment {
     ANSIBLE_HOST_KEY_CHECKING = 'False'
     ANSIBLE_PRIVATE_KEY_FILE = '/var/lib/jenkins/.ssh/ansible_key' // 필요한 경우 사용
@@ -26,18 +26,18 @@ pipeline {
     stage('Deploy Docker Image on Master') {
       steps {
         // Ansible 플레이북을 실행하여 배포
-        sh '''
-          ansible-playbook -i /etc/ansible/hosts /var/lib/jenkins/workspace/subject_jenkins/playbook.yml
-        '''
+        script {
+          sh '''
+            ansible-playbook -i /etc/ansible/hosts /var/lib/jenkins/workspace/subject_jenkins/playbook.yml
+          '''
+        }
       }
     }
   }
   post {
     always {
       // 작업 공간 정리
-      node {
-        cleanWs()
-      }
+      cleanWs()
     }
     failure {
       echo '배포 실패!'
