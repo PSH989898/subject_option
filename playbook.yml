@@ -1,30 +1,30 @@
+
 ---
 - name: Build and Push Docker image on Master
   hosts: master
   tasks:
     - name: Load Docker credentials from .env file
       shell: |
-        export $(sudo cat /home/user1/login.env | xargs)
+        export $(grep -v '^#' /path/to/.env | xargs)
       register: docker_env
 
     - name: Log in to Docker Hub
-      command: >
-        docker login -u {{ lookup('env', 'DOCKER_USERNAME') }}
-        -p {{ lookup('env', 'DOCKER_PASSWORD') }}
+      shell: echo "{{ lookup('env', 'DOCKER_PASSWORD') }}" | docker login -u "{{ lookup('env', 'DOCKER_USERNAME') }}" --password-stdin
       no_log: true
 
     - name: Build Docker image
       command: docker build -t pshhhhh98/subject:jenkin .
       args:
-        chdir: /root/jen  # Dockerfile이 있는 디렉토리
+        chdir: /root/jen  # 마스터 노드의 Dockerfile이 위치한 디렉토리
 
     - name: Push Docker image to Docker Hub
       command: docker push pshhhhh98/subject:jenkin
 
     - name: Deploy to Kubernetes
-      command: kubectl create deploy jenjenpod --replicas=3 --port=80 --image=pshhhhh98/subject:jenkin
-      ignore_errors: yes  # 이미 배포된 경우 무시
+      command: kubectl create deploy jenjen --replicas=3 --port=80 --image=pshhhhh98/subject:jenkin
+      ignore_errors: yes  # 배포가 이미 존재하는 경우 오류 무시
 
     - name: Expose Service on Kubernetes
-      command: kubectl expose deploy jenjenpod --type=LoadBalancer --port=80 --target-port=80 --name=jenjenpod-svc
-      ignore_errors: yes  # 이미 서비스가 노출된 경우 무시
+      command: kubectl expose deploy jenjen --type=LoadBalancer --port=80 --target-port=80 --name=web-puple-svc
+      ignore_errors: yes  # 서비스가 이미 존재하는 경우 오류 무시
+
