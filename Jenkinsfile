@@ -4,7 +4,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 // GitHub 또는 GitLab에서 코드 체크아웃
-                git url: 'https://github.com/your-repo/your-project.git', branch: 'main' // 자신의 리포지토리와 브랜치로 변경
+                git url: 'https://github.com/PSH989898/subject_option.git', branch: 'main' // 자신의 리포지토리와 브랜치로 변경
             }
         }
         stage('Copy Ansible Playbook to Master') {
