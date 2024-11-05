@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: Send payload to Jenkins
         run: |
-          curl -X POST https://b327-218-146-17-197.ngrok-free.app/github-webhook/
+          curl -X POST https://d46e-218-146-17-197.ngrok-free.app/github-webhook/
