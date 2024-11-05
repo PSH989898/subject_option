@@ -18,10 +18,12 @@
     - name: Push Docker image to Docker Hub
       command: docker push pshhhhh98/subject:jenkins
 
-    - name: Deploy to Kubernetes
-      command: kubectl create deploy jenjen --replicas=3 --port=80 --image=pshhhhh98/subject:jenkins
-      ignore_errors: yes  # 배포가 이미 존재하는 경우 오류 무시
 
+    # pod 만들기
+    - name: Deploy to Kubernetes
+      command: kubectl create deploy jenjen --replicas=1 --port=80 --image=pshhhhh98/subject:jenkins
+      ignore_errors: yes  # 배포가 이미 존재하는 경우 오류 무시
+    # 로드밸런서 만들기 
     - name: Expose Service on Kubernetes
       command: kubectl expose deploy jenjen --type=LoadBalancer --port=80 --target-port=80 --name=jenjen-svc
       ignore_errors: yes  # 서비스가 이미 존재하는 경우 오류 무시
