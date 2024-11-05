@@ -8,7 +8,7 @@
     - name: Build Docker image
       command: docker build -t pshhhhh98/subject:jenkins .
       args:
-        chdir: /root/jen  # Dockerfile이 있는 경로
+        chdir: /root/jen/subject_option  # Dockerfile이 있는 경로
 
     - name: Push Docker image to Docker Hub
       command: docker push pshhhhh98/subject:jenkins
