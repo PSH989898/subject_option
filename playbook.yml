@@ -20,9 +20,9 @@
       command: docker push pshhhhh98/subject:jenkin
 
     - name: Deploy to Kubernetes
-      command: kubectl create deploy web-puple --replicas=3 --port=80 --image=pshhhhh98/subject:jenkin
+      command: kubectl create deploy subject --replicas=3 --port=80 --image=pshhhhh98/subject:jenkin
       ignore_errors: yes  # 배포가 이미 존재하는 경우 오류 무시
 
     - name: Expose Service on Kubernetes
-      command: kubectl expose deploy web-puple --type=LoadBalancer --port=80 --target-port=80 --name=web-puple-svc
+      command: kubectl expose deploy subject --type=LoadBalancer --port=80 --target-port=80 --name=web-puple-svc
       ignore_errors: yes  # 서비스가 이미 존재하는 경우 오류 무시
