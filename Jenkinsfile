@@ -26,7 +26,7 @@ pipeline {
             steps {
                 // Ansible 플레이북을 실행하여 작업 수행
                 sh '''
-                ansible-playbook -i /etc/ansible/hosts master:/root/jen/playbook.yml
+                ansible-playbook -i /etc/ansible/hosts  /var/lib/jenkins/workspace/subject_jenkins/playbook.yml
                 '''
             }
         }
