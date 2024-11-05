@@ -4,12 +4,11 @@
   tasks:
     - name: Load environment variables from .env file
       shell: |
-        set -o allexport; source  /home/user1/login.env; set +o allexport
+        set -o allexport; source /root/login.env; set +o allexport
       register: env_vars
 
     - name: Log in to Docker Hub
       command: docker login -u {{ lookup('env', 'DOCKER_USERNAME') }} -p {{ lookup('env', 'DOCKER_PASSWORD') }}
-      no_log: true
 
     - name: Build Docker image
       command: docker build -t pshhhhh98/keduitlab:yellow .
