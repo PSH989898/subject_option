@@ -1,30 +1,29 @@
-
 ---
 - name: Build and Push Docker image on Master
   hosts: master
   tasks:
     - name: Load Docker credentials from .env file
       shell: |
-        export $(grep -v '^#' /path/to/.env | xargs)
+        export $(grep -v '^#' /home/user1/login.env | xargs)
       register: docker_env
+      changed_when: false
 
     - name: Log in to Docker Hub
-      shell: echo "{{ lookup('env', 'DOCKER_PASSWORD') }}" | docker login -u "{{ lookup('env', 'DOCKER_USERNAME') }}" --password-stdin
+      command: docker login -u {{ lookup('env', 'DOCKER_USERNAME') }} -p {{ lookup('env', 'DOCKER_PASSWORD') }}
       no_log: true
 
     - name: Build Docker image
-      command: docker build -t pshhhhh98/subject:jenkin .
+      command: docker build -t pshhhhh98/keduitlab:yellow .
       args:
         chdir: /root/jen  # 마스터 노드의 Dockerfile이 위치한 디렉토리
 
     - name: Push Docker image to Docker Hub
-      command: docker push pshhhhh98/subject:jenkin
+      command: docker push pshhhhh98/keduitlab:yellow
 
     - name: Deploy to Kubernetes
-      command: kubectl create deploy jenjen --replicas=3 --port=80 --image=pshhhhh98/subject:jenkin
+      command: kubectl create deploy web-puple --replicas=3 --port=80 --image=pshhhhh98/keduitlab:yellow
       ignore_errors: yes  # 배포가 이미 존재하는 경우 오류 무시
 
     - name: Expose Service on Kubernetes
-      command: kubectl expose deploy jenjen --type=LoadBalancer --port=80 --target-port=80 --name=web-puple-svc
+      command: kubectl expose deploy web-puple --type=LoadBalancer --port=80 --target-port=80 --name=web-puple-svc
       ignore_errors: yes  # 서비스가 이미 존재하는 경우 오류 무시
-
