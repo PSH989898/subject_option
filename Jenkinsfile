@@ -3,8 +3,6 @@ pipeline {
   environment {
     ANSIBLE_HOST_KEY_CHECKING = 'False'
     ANSIBLE_PRIVATE_KEY_FILE = '/var/lib/jenkins/.ssh/ansible_key' // 필요한 경우 사용
-    DOCKER_USERNAME = credentials('docker-username') // Jenkins의 비밀 관리 사용
-    DOCKER_PASSWORD = credentials('docker-password') // Jenkins의 비밀 관리 사용
   }
   stages {
     stage('Checkout') {
@@ -13,12 +11,14 @@ pipeline {
         checkout scm
       }
     }
-    stage('Build Docker Image') {
+    stage('Build and Push Docker Image') {
       steps {
         script {
-          // Docker 이미지를 빌드
+          // Docker 이미지를 빌드하고 Docker Hub에 푸시
           sh '''
             docker build -t pshhhhh98/subject:jenkin .
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker push pshhhhh98/subject:jenkin
           '''
         }
       }
@@ -35,7 +35,9 @@ pipeline {
   post {
     always {
       // 작업 공간 정리
-      cleanWs()
+      node {
+        cleanWs()
+      }
     }
     failure {
       echo '배포 실패!'
