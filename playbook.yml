@@ -2,13 +2,8 @@
 - name: Build and Push Docker image on Master
   hosts: master
   tasks:
-    - name: Load environment variables from .env file
-      shell: |
-        set -o allexport; source /root/login.env; set +o allexport
-      register: env_vars
-
-    - name: Log in to Docker Hub
-      command: docker login -u {{ lookup('env', 'DOCKER_USERNAME') }} -p {{ lookup('env', 'DOCKER_PASSWORD') }}
+    - name: Log in to Docker Hub #이부분은 나중에 env로 해줘야함
+      command: docker login -u pshhhhh98 -p a1a2a3a4@@
 
     - name: Build Docker image
       command: docker build -t pshhhhh98/keduitlab:yellow .
