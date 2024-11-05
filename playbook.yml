@@ -1,75 +1,30 @@
 ---
 - name: Build and Push Docker image on Master
   hosts: master
-  vars:
-    docker_env_file: /home/user1/login.env
-    docker_image: pshhhhh98/subject:jenkin
-    docker_build_dir: /root/jen
-    kubernetes_deploy_name: jenjenpod
-    kubernetes_service_name: jenjenpod-svc
   tasks:
     - name: Load Docker credentials from .env file
-      include_vars:
-        file: "{{ docker_env_file }}"
-        name: docker_credentials
-        # 예: login.env 파일에 DOCKER_USERNAME과 DOCKER_PASSWORD가 정의되어 있어야 함
+      shell: |
+        export $(sudo cat /home/user1/login.env | xargs)
+      register: docker_env
 
     - name: Log in to Docker Hub
-      docker_login:
-        username: "{{ docker_credentials.DOCKER_USERNAME }}"
-        password: "{{ docker_credentials.DOCKER_PASSWORD }}"
-        registry: https://index.docker.io/v1/
+      command: >
+        docker login -u {{ lookup('env', 'DOCKER_USERNAME') }}
+        -p {{ lookup('env', 'DOCKER_PASSWORD') }}
       no_log: true
 
     - name: Build Docker image
-      docker_image:
-        path: "{{ docker_build_dir }}"
-        name: "{{ docker_image }}"
-        tag: latest
-        state: present
+      command: docker build -t pshhhhh98/subject:jenkin .
+      args:
+        chdir: /root/jen  # Dockerfile이 있는 디렉토리
 
     - name: Push Docker image to Docker Hub
-      docker_image:
-        name: "{{ docker_image }}"
-        tag: latest
-        push: yes
+      command: docker push pshhhhh98/subject:jenkin
 
     - name: Deploy to Kubernetes
-      kubernetes.core.k8s:
-        state: present
-        definition:
-          apiVersion: apps/v1
-          kind: Deployment
-          metadata:
-            name: "{{ kubernetes_deploy_name }}"
-          spec:
-            replicas: 3
-            selector:
-              matchLabels:
-                app: "{{ kubernetes_deploy_name }}"
-            template:
-              metadata:
-                labels:
-                  app: "{{ kubernetes_deploy_name }}"
-              spec:
-                containers:
-                - name: "{{ kubernetes_deploy_name }}"
-                  image: "{{ docker_image }}"
-                  ports:
-                  - containerPort: 80
+      command: kubectl create deploy jenjenpod --replicas=3 --port=80 --image=pshhhhh98/subject:jenkin
+      ignore_errors: yes  # 이미 배포된 경우 무시
 
     - name: Expose Service on Kubernetes
-      kubernetes.core.k8s:
-        state: present
-        definition:
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: "{{ kubernetes_service_name }}"
-          spec:
-            type: LoadBalancer
-            ports:
-              - port: 80
-                targetPort: 80
-            selector:
-              app: "{{ kubernetes_deploy_name }}"
+      command: kubectl expose deploy jenjenpod --type=LoadBalancer --port=80 --target-port=80 --name=jenjenpod-svc
+      ignore_errors: yes  # 이미 서비스가 노출된 경우 무시
