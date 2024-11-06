@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: jenjen
 spec:
-  replicas: 2  # 복제본 2개
+  replicas: 1  # 복제본 2개
   selector:
     matchLabels:
       app: jenjen

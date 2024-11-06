@@ -28,5 +28,5 @@
     #   command: kubectl expose deploy jenjen --type=LoadBalancer --port=80 --target-port=80 --name=jenjen-svc
     #   ignore_errors: yes  # 서비스가 이미 존재하는 경우 오류 무시
 
-    - name: Apply Deployment
+    - name: Apply Deployment                                                            
       command: kubectl apply -f /root/jen/subject_option/testpod.yml  # 직접 명령어로 배포하니까, 기존의 배포 pod의 멱등성이 깨짐, 따로 yml파일을 만들어서 apply하기
