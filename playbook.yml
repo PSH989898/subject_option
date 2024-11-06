@@ -2,10 +2,16 @@
 - name: Build and Push Docker image on Master
   hosts: master
   tasks:
+      # PlayBook 복사하기
     - name: Copy Ansible Playbook to Master
       copy:
         src: /var/lib/jenkins/workspace/subject_jenkins/playbook.yml  # Jenkins에서 뽑아올 경로
         dest: /root/jen/playbook.yml #복사해서 들어갈 경로
+      # Deploy용 yml 복사하기
+    - name: Copy Ansible Deploy to Master
+      copy:
+        src: /var/lib/jenkins/workspace/subject_jenkins/testpod.yml  # Jenkins에서 뽑아올 경로
+        dest: /root/jen/testpod.yml #복사해서 들어갈 경로
   
     - name: Log in to Docker Hub #이부분은 나중에 env로 해줘야함
       command: docker login -u pshhhhh98 -p a1a2a3a4@@
@@ -29,4 +35,4 @@
     #   ignore_errors: yes  # 서비스가 이미 존재하는 경우 오류 무시
 
     - name: Apply Deployment                                                            
-      command: kubectl apply -f /root/jen/subject_option/testpod.yml  # 직접 명령어로 배포하니까, 기존의 배포 pod의 멱등성이 깨짐, 따로 yml파일을 만들어서 apply하기
+      command: kubectl apply -f /root/jen/testpod.yml  # 직접 명령어로 배포하니까, 기존의 배포 pod의 멱등성이 깨짐, 따로 yml파일을 만들어서 apply하기
