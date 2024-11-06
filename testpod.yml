@@ -1,34 +1,37 @@
+#Deployment 작성하기
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: jenjen
-  labels:
-    app: web
 spec:
-  replicas: 1
+  replicas: 2  # 복제본 2개
   selector:
     matchLabels:
-      app: web
+      app: jenjen
   template:
     metadata:
       labels:
-        app: web
+        app: jenjen
     spec:
       containers:
       - name: web
-        image: pshhhhh98/subject:jenkin
+        image: pshhhhh98/subject:jenkins
         ports:
         - containerPort: 80
+
+
+#로드 밸런서 작성하기
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: web-service
+  name: jenjen-svc
 spec:
   selector:
-    app: web
+    app: jenjen
   ports:
   - protocol: TCP
     port: 80
     targetPort: 80
   type: LoadBalancer
+
