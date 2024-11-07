@@ -15,7 +15,8 @@ spec:
     spec:
       containers:
       - name: web
-        image: pshhhhh98/subject:jenkins
+        #image: pshhhhh98/subject:jenkins
+        image: 211.183.3.105/subject_harbor/subject:jenkins  # Harbor에서 사용할 이미지 경로
         ports:
         - containerPort: 80
 
