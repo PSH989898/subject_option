@@ -28,17 +28,7 @@
       command: docker tag subject:harbor  211.183.3.105/subject_harbor/subject:harbor 
 
     - name: Push Docker image to Docker Hub  # 이미지 푸시하기
-      #command: docker push pshhhhh98/subject:jenkins
       command: docker push 211.183.3.105/subject_harbor/subject:harbor 
-
-    # # pod 만들기
-    # - name: Deploy to Kubernetes
-    #   command: kubectl create deploy jenjen --replicas=2 --port=80 --image=pshhhhh98/subject:jenkins
-    #   ignore_errors: yes  # 배포가 이미 존재하는 경우 오류 무시
-    # # 로드밸런서 만들기 
-    # - name: Expose Service on Kubernetes
-    #   command: kubectl expose deploy jenjen --type=LoadBalancer --port=80 --target-port=80 --name=jenjen-svc
-    #   ignore_errors: yes  # 서비스가 이미 존재하는 경우 오류 무시
 
     - name: Apply Deployment                                                            
       command: kubectl apply -f /root/jen/testpod.yml  # 직접 명령어로 배포하니까, 기존의 배포 pod의 멱등성이 깨짐, 따로 yml파일을 만들어서 apply하기
