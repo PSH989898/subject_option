@@ -20,7 +20,7 @@
       command: sudo docker login https://211.183.3.105 -u admin -p Harbor12345
 
     - name: Build Docker image  # 이미지 빌드하기
-      command: docker build -t 211.183.3.105/subject_harbor/subject:jenkins .
+      command: docker build -t subject:jenkins .
       args:
         chdir: /root/jen/subject_option  # Dockerfile이 있는 경로
 
