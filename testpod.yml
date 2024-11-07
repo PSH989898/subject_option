@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: jenjen
 spec:
-  replicas: 1  # 복제본 1개
+  replicas: 3  # 복제본 1개
   selector:
     matchLabels:
       app: jenjen
@@ -15,7 +15,6 @@ spec:
     spec:
       containers:
       - name: web
-        #image: pshhhhh98/subject:jenkins
         image: 211.183.3.105/subject_harbor/subject:harbor   # Harbor에서 사용할 이미지 경로
         ports:
         - containerPort: 80
