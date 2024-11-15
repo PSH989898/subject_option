@@ -1,3 +1,4 @@
+#playbook.yml
 ---
 - name: Build and Push Docker image on Master
   hosts: master
@@ -12,9 +13,6 @@
       copy:
         src: /var/lib/jenkins/workspace/subject_jenkins/testpod.yml  # Jenkins에서 뽑아올 경로
         dest: /root/jen/testpod.yml #복사해서 들어갈 경로
-  
-    # - name: Log in to Docker Hub #이부분은 나중에 env로 해줘야함
-    #   command: docker login -u pshhhhh98 -p a1a2a3a4@@
 
     - name: Log in to Docker Hub #이부분은 나중에 env로 해줘야함
       command: sudo docker login https://211.183.3.105 -u admin -p Harbor12345
